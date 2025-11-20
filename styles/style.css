@@ -31,22 +31,7 @@ body {
   font-weight: 600;
 }
 
-.floor {
-  flex: 1;
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 150px 150px 150px 150px;
-  background: repeating-linear-gradient(
-    45deg,
-    #d2b48c,
-    #d2b48c 20px,
-    #c19a6b 20px,
-    #c19a6b 40px
-  );
-  padding: 10px;
-  border-radius: 14px;
-}
+
 
 .room {
   border-radius: 10px;
@@ -113,7 +98,7 @@ body {
 }
 .floor-wrapper {
   flex: 1;
-  background: rgb(229, 224, 224);
+  background: white; 
   padding: 20px;
   border-radius: 14px;
   box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
@@ -123,14 +108,21 @@ body {
 
   height: 100%;       
   overflow-y: auto;    
-.floor {
-  grid-template-rows: 120px 120px 120px 120px; 
 }
 
-
-.floor-title {
-  text-align: center;
-  font-size: 26px;
-  font-weight: 700;
-  color: #333;
+.floor {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 120px 120px 120px 120px; 
+  background: repeating-linear-gradient(
+    45deg,
+    #d2b48c,
+    #d2b48c 20px,
+    #c19a6b 20px,
+    #c19a6b 40px
+  );
+  padding: 10px;
+  border-radius: 14px;
 }
