@@ -35,11 +35,12 @@ body {
   padding-bottom: 10px;
 }
 
-.sidebar ul.empty-list p {
+.sidebar ul.empty-list li {
   color: #bdc3c7;
   font-style: italic;
   margin-top: 10px;
 }
+
 
 .floor-wrapper {
   flex: 1;
