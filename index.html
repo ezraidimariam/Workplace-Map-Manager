@@ -13,11 +13,11 @@
     <aside class="sidebar shadow-sm">
       <h2><b>Unassigned Staff</b></h2>
       <ul id="unassigned-list" class="empty-list">
-        <li>Ali - Réceptionniste</li>
-        <li>Sara - IT Technician</li>
-        <li>Youssef - Security</li>
+        <li data-role="Réceptionniste">Ali - Réceptionniste <button class="remove-btn">X</button></li>
+        <li data-role="IT Technician">Sara - IT Technician <button class="remove-btn">X</button></li>
+        <li data-role="Security">Youssef - Security <button class="remove-btn">X</button></li>
       </ul>
-      <button class="btn btn-primary w-100" id="add-worker-btn">+ Ajouter employé</button>
+      <button class="btn btn-primary w-100" id="add-worker-btn" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">+ Ajouter employé</button>
     </aside>
 
     <main class="floor-wrapper">
@@ -28,9 +28,7 @@
             <h3>Réception</h3>
             <button class="add-btn">+</button>
           </div>
-          <div class="room-body">
-            <div class="employee">Laila - Manager</div>
-          </div>
+          <div class="room-body empty-room">Aucun employé</div>
         </div>
 
         <div class="corridor"></div>
@@ -78,8 +76,56 @@
     </main>
   </div>
 
+  <!-- Modal pour ajouter un employé -->
+  <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addEmployeeModalLabel">Ajouter un employé</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="employee-form">
+            <div class="mb-3">
+              <label for="emp-name" class="form-label">Nom</label>
+              <input type="text" class="form-control" id="emp-name" required>
+            </div>
+            <div class="mb-3">
+              <label for="emp-role" class="form-label">Rôle</label>
+              <select class="form-select" id="emp-role" required>
+                <option value="">Sélectionner</option>
+                <option value="Réceptionniste">Réceptionniste</option>
+                <option value="IT Technician">IT Technician</option>
+                <option value="Security">Security</option>
+                <option value="Manager">Manager</option>
+                <option value="Nettoyage">Nettoyage</option>
+                <option value="Autres">Autres</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="emp-photo" class="form-label">Photo (URL)</label>
+              <input type="url" class="form-control" id="emp-photo">
+            </div>
+            <div class="mb-3">
+              <label for="emp-email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="emp-email">
+            </div>
+            <div class="mb-3">
+              <label for="emp-phone" class="form-label">Téléphone</label>
+              <input type="tel" class="form-control" id="emp-phone">
+            </div>
+            <div class="mb-3">
+              <label for="emp-exp" class="form-label">Expériences professionnelles</label>
+              <textarea class="form-control" id="emp-exp" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Ajouter</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="script.js"></script>
-
 </body>
 </html>
