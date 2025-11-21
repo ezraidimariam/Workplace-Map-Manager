@@ -1,65 +1,89 @@
-
 const unassignedList = document.getElementById("unassigned-list");
-const addWorkerBtn = document.getElementById("add-worker-btn");
+const employeeForm = document.getElementById("employee-form");
+const addEmployeeModal = new bootstrap.Modal(
+  document.getElementById("addEmployeeModal")
+);
 const addBtns = document.querySelectorAll(".add-btn");
 
-
-function createEmployee(name, role) {
-  const div = document.createElement("div");
-  div.className = "employee";
-  div.textContent = `${name} - ${role}`;
-
-
-  const removeBtn = document.createElement("button");
-  removeBtn.textContent = "X";
-  removeBtn.style.marginLeft = "5px";
-  removeBtn.onclick = () => {
-    div.remove();
-    unassignedList.appendChild(createEmployee(name, role));
+function createEmployeeElement(
+  name,
+  role,
+  photo = "",
+  email = "",
+  phone = "",
+  exp = ""
+) {
+  const li = document.createElement("li");
+  li.setAttribute("data-role", role);
+  li.innerHTML = `
+    ${name} - ${role} 
+    <button class="remove-btn">X</button>
+  `;
+  li.querySelector(".remove-btn").onclick = (e) => {
+    e.stopPropagation();
+    li.remove();
+    unassignedList.appendChild(
+      createEmployeeElement(name, role, photo, email, phone, exp)
+    );
+  };
+  li.onclick = (e) => {
+    if (e.target.tagName !== "BUTTON") {
+      alert(
+        `Profil:\nNom: ${name}\nRôle: ${role}\nEmail: ${email}\nTéléphone: ${phone}\nExp: ${exp}`
+      );
+    }
   };
 
-  div.appendChild(removeBtn);
-  return div;
+  return li;
 }
+employeeForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = document.getElementById("emp-name").value.trim();
+  const role = document.getElementById("emp-role").value;
+  const photo = document.getElementById("emp-photo").value;
+  const email = document.getElementById("emp-email").value;
+  const phone = document.getElementById("emp-phone").value;
+  const exp = document.getElementById("emp-exp").value;
 
-
-addWorkerBtn.addEventListener("click", () => {
-  const name = prompt("Nom de l'employé :");
-  const role = prompt("Rôle de l'employé :");
   if (name && role) {
-    unassignedList.appendChild(createEmployee(name, role));
+    const employeeLi = createEmployeeElement(
+      name,
+      role,
+      photo,
+      email,
+      phone,
+      exp
+    );
+    unassignedList.appendChild(employeeLi);
+
+    addEmployeeModal.hide();
+    employeeForm.reset();
   }
 });
-
-
-addBtns.forEach(btn => {
+addBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     const room = btn.closest(".room");
     const roomId = room.id.toLowerCase();
-
- 
     const employees = Array.from(unassignedList.children);
+
     if (employees.length === 0) return alert("Aucun employé disponible !");
 
-    const names = employees.map(e => e.textContent.replace("X", "").trim());
-    const selectedName = prompt("Tapez le nom exact de l'employé :\n" + names.join("\n"));
-    const employeeDiv = employees.find(e => e.textContent.includes(selectedName));
-
-    if (!employeeDiv) return alert("Employé introuvable !");
-
-    const role = employeeDiv.textContent.split(" - ")[1];
-
-    if (
-      (roomId === "reception" && role !== "Réceptionniste") ||
-      (roomId === "server" && role !== "IT Technician") ||
-      (roomId === "security" && role !== "Security")
-    ) {
-      return alert("Cet employé ne peut pas aller ici !");
-    }
-
-  
+    const eligibleEmployees = employees.filter((e) => {
+      const role = e.getAttribute("data-role");
+      if (roomId === "reception")
+        return role === "Réceptionniste" || role === "Manager";
+      if (roomId === "server")
+        return role === "IT Technician" || role === "Manager";
+      if (roomId === "security")
+        return role === "Security" || role === "Manager";
+      if (roomId === "archives") return role !== "Nettoyage";
+      return true;
+    });
+    if (eligibleEmployees.length === 0)
+      return alert("Aucun employé éligible pour cette salle !");
+    const selectedEmployee = eligibleEmployees[0];
     const roomBody = room.querySelector(".room-body");
     if (roomBody.classList.contains("empty-room")) roomBody.textContent = "";
-    roomBody.appendChild(employeeDiv);
+    roomBody.appendChild(selectedEmployee);
   });
 });
