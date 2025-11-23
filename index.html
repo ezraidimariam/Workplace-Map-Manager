@@ -1,173 +1,147 @@
-<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Employee Floor Planner</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles/style.css" />
-  </head>
-  <body>
-    <div class="app">
-      <aside class="sidebar shadow-sm">
-        <h2><b>Unassigned Staff</b></h2>
-        <ul id="unassigned-list" class="empty-list">
-          <li data-role="Réceptionniste">
-            Ali - Réceptionniste <button class="remove-btn">X</button>
-          </li>
-          <li data-role="IT Technician">
-            Sara - IT Technician <button class="remove-btn">X</button>
-          </li>
-          <li data-role="Security">
-            Youssef - Security <button class="remove-btn">X</button>
-          </li>
-        </ul>
-        <button
-          class="btn btn-primary w-100"
-          id="add-worker-btn"
-          data-bs-toggle="modal"
-          data-bs-target="#addEmployeeModal"
-        >
-          + Ajouter employé
-        </button>
-      </aside>
+  <!DOCTYPE html>
+  <html lang="fr">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>WorkSphere - Floor Planner</title>
+      <link rel="stylesheet" href="styles/style.css" />
+    </head>
+    <body>
+      <div class="container">
+       
+        <aside class="sidebar">
+          <h2>Unassigned Staff</h2>
+          <ul id="unassigned-list"></ul>
+          <button id="add-worker-btn">Add New Worker</button>
+        </aside>
 
-      <main class="floor-wrapper">
-        <h1 class="floor-title">Employee Floor Planner</h1>
-        <div class="floor">
-          <div class="room room-reception" id="reception">
-            <div class="room-header">
-              <h3>Réception</h3>
-              <button class="add-btn">+</button>
-            </div>
-            <div class="room-body empty-room">Aucun employé</div>
+      
+        <main class="floor-plan">
+          <div class="zone" data-zone="conference">
+            <h3>Salle de conférence</h3>
+            <button class="add-btn">+</button>
+            <div class="zone-body"></div>
           </div>
 
-          <div class="corridor"></div>
-
-          <div class="room room-conference" id="conference">
-            <div class="room-header">
-              <h3>Salle de conférence</h3>
-              <button class="add-btn">+</button>
-            </div>
-            <div class="room-body empty-room">Aucun employé</div>
+          <div class="zone" data-zone="reception">
+            <h3>Réception</h3>
+            <button class="add-btn">+</button>
+            <div class="zone-body"></div>
           </div>
 
-          <div class="room room-server" id="server">
-            <div class="room-header">
-              <h3>Salle des serveurs</h3>
-              <button class="add-btn">+</button>
-            </div>
-            <div class="room-body empty-room">Aucun employé</div>
+          <div class="zone" data-zone="server">
+            <h3>Salle des serveurs</h3>
+            <button class="add-btn">+</button>
+            <div class="zone-body"></div>
           </div>
 
-          <div class="room room-security" id="security">
-            <div class="room-header">
-              <h3>Salle de sécurité</h3>
-              <button class="add-btn">+</button>
-            </div>
-            <div class="room-body empty-room">Aucun employé</div>
+          <div class="zone" data-zone="security">
+            <h3>Salle de sécurité</h3>
+            <button class="add-btn">+</button>
+            <div class="zone-body"></div>
           </div>
 
-          <div class="room room-staff" id="staff">
-            <div class="room-header">
-              <h3>Salle du personnel</h3>
-              <button class="add-btn">+</button>
-            </div>
-            <div class="room-body empty-room">Aucun employé</div>
+          <div class="zone" data-zone="staff">
+            <h3>Salle du personnel</h3>
+            <button class="add-btn">+</button>
+            <div class="zone-body"></div>
           </div>
 
-          <div class="room room-archives" id="archives">
-            <div class="room-header">
-              <h3>Salle d’archives</h3>
-              <button class="add-btn">+</button>
-            </div>
-            <div class="room-body empty-room">Aucun employé</div>
+          <div class="zone" data-zone="archives">
+            <h3>Salle d'archives</h3>
+            <button class="add-btn">+</button>
+            <div class="zone-body"></div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+      
 
-    <div
-      class="modal fade"
-      id="addEmployeeModal"
-      tabindex="-1"
-      aria-labelledby="addEmployeeModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
+      <div id="add-modal" class="modal">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addEmployeeModalLabel">
-              Ajouter un employé
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <form id="employee-form">
-              <div class="mb-3">
-                <label for="emp-name" class="form-label">Nom</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="emp-name"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="emp-role" class="form-label">Rôle</label>
-                <select class="form-select" id="emp-role" required>
-                  <option value="">Sélectionner</option>
-                  <option value="Réceptionniste">Réceptionniste</option>
-                  <option value="IT Technician">IT Technician</option>
-                  <option value="Security">Security</option>
-                  <option value="Manager">Manager</option>
-                  <option value="Nettoyage">Nettoyage</option>
-                  <option value="Autres">Autres</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="emp-photo" class="form-label">Photo (URL)</label>
-                <input type="url" class="form-control" id="emp-photo" />
-                <img id="emp-photo-preview" src="" alt="Preview" style="width:100%; margin-top:10px; display:none; border-radius:8px;">
+          <span class="close-btn">×</span>
+          <h2>Add Worker</h2>
+          <form id="add-worker-form">
+            <label
+              >Nom complet
+              <input type="text" id="name" required />
+            </label>
 
+            <label
+              >Poste
+              <select id="role" required>
+                <option value="Réceptionniste">Réceptionniste</option>
+                <option value="Technicien IT">Technicien IT</option>
+                <option value="Agent de sécurité">Agent de sécurité</option>
+                <option value="Manager">Manager</option>
+                <option value="Nettoyage">Nettoyage</option>
+                <option value="Employé">Employé</option>
+              </select>
+            </label>
+
+            <label
+              >Lien de la photo
+              <input type="text" id="photo" />
+            </label>
+            <img
+              id="photo-preview"
+              style="
+                width: 60px;
+                height: 60px;
+                display: none;
+                border-radius: 50%;
+                margin-top: 10px;
+              "
+            />
+
+            <label
+              >Email
+              <input type="email" id="email" />
+            </label>
+
+            <label
+              >Numéro de téléphone
+              <input type="text" id="phone" />
+            </label>
+            <div class="experiences-section">
+              <label>Expériences professionnelles</label>
+
+              <div id="experiences-container">
+                <div class="experience-item">
+                  <input
+                    type="text"
+                    placeholder="Poste occupé"
+                    class="exp-role"
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="Entreprise"
+                    class="exp-company"
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="Durée (ex: 2021-2023)"
+                    class="exp-duration"
+                    required
+                  />
+                  <button type="button" class="remove-exp">🗑</button>
+                </div>
               </div>
-              <div class="mb-3">
-                <label for="emp-email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="emp-email" />
-              </div>
-              <div class="mb-3">
-                <label for="emp-phone" class="form-label">Téléphone</label>
-                <input type="tel" class="form-control" id="emp-phone" />
-              </div>
-              <div class="mb-3">
-                <label for="emp-exp" class="form-label"
-                  >Expériences professionnelles</label
-                >
-                <textarea class="form-control" id="emp-exp" rows="2"></textarea>
-              </div>
-              <button type="submit" class="btn btn-success w-100">
-                Ajouter
+
+              <button type="button" id="add-experience-btn" class="btn-add">
+                + Ajouter une expérience
               </button>
-            </form>
-          </div>
+            </div>
+
+            <div class="modal-actions">
+              <button type="submit">Ajouter</button>
+              <button type="button" id="cancel-btn">Annuler</button>
+            </div>
+          </form>
         </div>
       </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
-  </body>
-</html>
+      <script src="script.js"></script>
+    </body>
+  </html>
