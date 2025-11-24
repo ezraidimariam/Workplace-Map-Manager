@@ -1,6 +1,6 @@
 let employees = [];
 
-const maxParZone = {
+const maxPerZone = {
   reception: 1,
   server: 2,
   security: 2,
@@ -9,78 +9,93 @@ const maxParZone = {
   staff: Infinity
 };
 
+// DOM Elements
 const addBtn = document.getElementById("add-worker-btn");
 const modal = document.getElementById("add-modal");
 const closeBtn = document.querySelector(".close-btn");
+const cancelBtn = document.getElementById("cancel-btn");
 const form = document.getElementById("add-worker-form");
-let unassignedList = document.getElementById("unassigned-list");
+const unassignedList = document.getElementById("unassigned-list");
+const expContainer = document.getElementById("experiences-container");
+const photoInput = document.getElementById("photo");
+const photoPreview = document.getElementById("photo-preview");
 
+// Show/hide modal
 addBtn.onclick = () => (modal.style.display = "flex");
-closeBtn.onclick = () => (modal.style.display = "none");
-document.getElementById("cancel-btn").onclick = () => {
+closeBtn.onclick = cancelBtn.onclick = () => resetModal();
+
+// Reset modal
+function resetModal() {
   modal.style.display = "none";
   form.reset();
-  document.getElementById("experiences-container").innerHTML = "";
-};
+  expContainer.innerHTML = "";
+  photoPreview.style.display = "none";
+}
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const photo = document.getElementById("photo").value.trim();
-  const role = document.getElementById("role").value;
-
-  const nameRegex = /^[A-Za-z\s]+$/;
-  if (!nameRegex.test(name)) {
-    alert("Le nom ne peut contenir que des lettres et des espaces !");
-    return;
-  }
-
-  const phoneRegex = /^\d+$/;
-  if (phone && !phoneRegex.test(phone)) {
-    alert("Le numéro de téléphone ne peut contenir que des chiffres !");
-    return;
-  }
-
-  if (photo) {
-    const urlRegex = /^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)(\/[\w\-.,@?^=%&:\/~+#]*)?$/;
-    if (!urlRegex.test(photo)) {
-      alert("Veuillez entrer une URL valide pour la photo !");
-      return;
-    }
-  }
-
-  if (role === "") {
-    alert("Veuillez choisir un rôle !");
-    return;
-  }
-
-  const worker = {
-    name: name,
-    role: role,
-    photo: photo,
-    email: document.getElementById("email").value.trim(),
-    phone: phone,
-    experiences: [],
-    location: "unassigned"
-  };
-
-  document.querySelectorAll(".experience-item").forEach(exp => {
-    worker.experiences.push({
-      role: exp.querySelector(".exp-role").value.trim(),
-      company: exp.querySelector(".exp-company").value.trim(),
-      duration: exp.querySelector(".exp-duration").value.trim()
-    });
-  });
-
-  employees.push(worker);
-  renderUnassigned();
-  modal.style.display = "none";
-  form.reset();
-  document.getElementById("experiences-container").innerHTML = "";
+// Photo preview
+photoInput.addEventListener("input", () => {
+  if (photoInput.value.trim()) {
+    photoPreview.src = photoInput.value;
+    photoPreview.style.display = "block";
+  } else photoPreview.style.display = "none";
 });
 
+// Add experience
+document.getElementById("add-experience-btn").addEventListener("click", () => {
+  const div = document.createElement("div");
+  div.className = "experience-item";
+  div.innerHTML = `
+    <input type="text" placeholder="Poste occupé" class="exp-role" required />
+    <input type="text" placeholder="Entreprise" class="exp-company" required />
+    <input type="text" placeholder="Durée (ex: 2021-2023)" class="exp-duration" required />
+    <button type="button" class="remove-exp">🗑</button>
+  `;
+  div.querySelector(".remove-exp").onclick = () => div.remove();
+  expContainer.appendChild(div);
+});
+
+// Submit worker
+form.addEventListener("submit", e => {
+  e.preventDefault();
+  const worker = getWorkerFromForm();
+  if (!worker) return;
+  employees.push(worker);
+  renderUnassigned();
+  renderZones();
+  resetModal();
+});
+
+// Get worker object from form
+function getWorkerFromForm() {
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  let photo = document.getElementById("photo").value.trim();
+  const role = document.getElementById("role").value;
+  const email = document.getElementById("email").value.trim();
+
+  if (!/^[A-Za-z\s]+$/.test(name)) { alert("Le nom ne peut contenir que des lettres et des espaces !"); return null; }
+  if (phone && !/^\d+$/.test(phone)) { alert("Le numéro de téléphone ne peut contenir que des chiffres !"); return null; }
+  if (!role) { alert("Veuillez choisir un rôle !"); return null; }
+
+  // Validate photo URL or Base64
+  if (photo && !(
+      /^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)(\/[\w\-.,@?^=%&:\/~+#]*)?$/.test(photo) ||
+      /^data:image\/(png|jpeg|jpg|gif);base64,/.test(photo)
+  )) {
+      alert("يرجى إدخال رابط صحيح للصورة أو Data URL!");
+      return null;
+  }
+
+  const experiences = Array.from(document.querySelectorAll(".experience-item")).map(exp => ({
+    role: exp.querySelector(".exp-role").value.trim(),
+    company: exp.querySelector(".exp-company").value.trim(),
+    duration: exp.querySelector(".exp-duration").value.trim()
+  }));
+
+  return { name, role, photo, email, phone, experiences, location: "unassigned" };
+}
+
+// Render unassigned
 function renderUnassigned() {
   unassignedList.innerHTML = "";
   employees.filter(e => e.location === "unassigned").forEach((emp, i) => {
@@ -92,92 +107,62 @@ function renderUnassigned() {
       </div>
       <button onclick="removeEmp(${i})">x</button>
     `;
-    li.onclick = ev => {
-      if (ev.target.tagName === "BUTTON") return;
-      openEmployeeDetail(i);
-    };
+    li.onclick = ev => { if (ev.target.tagName !== "BUTTON") openEmployeeDetail(i); };
     unassignedList.appendChild(li);
   });
 }
 
-function removeEmp(i) {
-  employees.splice(i, 1);
-  renderUnassigned();
-  renderZones();
-}
+// Remove employee
+function removeEmp(i) { employees.splice(i, 1); renderUnassigned(); renderZones(); }
 
+// Zones
 const zones = document.querySelectorAll(".zone");
 zones.forEach(zone => {
-  const btn = zone.querySelector(".add-btn");
-  const zoneId = zone.dataset.zone;
-  btn.onclick = () => openAssignForm(zoneId, zone);
+  zone.querySelector(".add-btn").onclick = () => openAssignForm(zone.dataset.zone, zone);
 });
 
+// Assign form
 function openAssignForm(zoneId, zone) {
   const currentCount = employees.filter(e => e.location === zoneId).length;
-  const maxCount = maxParZone[zoneId];
-  
-  if (currentCount >= maxCount) {
-    alert("Impossible d'ajouter plus d'employés dans cette zone !");
-    return;
-  }
+  if (currentCount >= maxPerZone[zoneId]) return alert("Impossible d'ajouter plus d'employés dans cette zone !");
 
   const eligible = employees.filter(e => e.location === "unassigned" && checkRules(zoneId, e.role));
-  if (eligible.length === 0) return alert("Aucun employé éligible.");
+  if (!eligible.length) return alert("Aucun employé éligible.");
 
   const formDiv = document.createElement("div");
   formDiv.className = "assign-form";
-  formDiv.style.padding = "10px";
-  formDiv.style.marginTop = "10px";
-  formDiv.style.background = "#232836";
-  formDiv.style.borderRadius = "10px";
-
+  formDiv.style.cssText = "padding:10px;margin-top:10px;background:#232836;border-radius:10px";
   formDiv.innerHTML = `
-    <select class="assign-select">
-      ${eligible.map((e,i) => `<option value="${i}">${e.name} - ${e.role}</option>`).join('')}
-    </select>
+    <select class="assign-select">${eligible.map((e,i) => `<option value="${i}">${e.name} - ${e.role}</option>`).join('')}</select>
     <button class="assign-btn">Ajouter</button>
     <button class="assign-cancel">Annuler</button>
   `;
 
   formDiv.querySelector(".assign-cancel").onclick = () => formDiv.remove();
   formDiv.querySelector(".assign-btn").onclick = () => {
-    const select = formDiv.querySelector(".assign-select");
-    const emp = eligible[parseInt(select.value)];
-
-    const countNow = employees.filter(e => e.location === zoneId).length;
-    if (countNow >= maxCount) {
-      alert("Impossible d'ajouter plus d'employés dans cette zone !");
-      formDiv.remove();
-      return;
+    const emp = eligible[parseInt(formDiv.querySelector(".assign-select").value)];
+    if (employees.filter(e => e.location === zoneId).length >= maxPerZone[zoneId]) {
+      alert("Impossible d'ajouter plus d'employés dans cette zone !"); formDiv.remove(); return;
     }
-
     emp.location = zoneId;
-    renderZones();
-    renderUnassigned();
-    formDiv.remove();
+    renderZones(); renderUnassigned(); formDiv.remove();
   };
 
   zone.appendChild(formDiv);
 }
 
+// Render zones
 function renderZones() {
   zones.forEach(zone => {
     const zoneId = zone.dataset.zone;
     const body = zone.querySelector(".zone-body");
     body.innerHTML = "";
-
     const list = employees.filter(e => e.location === zoneId);
 
     let counter = zone.querySelector(".zone-counter");
-    if (!counter) {
-      counter = document.createElement("div");
-      counter.className = "zone-counter";
-      counter.style.marginBottom = "8px";
-      zone.insertBefore(counter, body);
-    }
-    counter.textContent = `(${list.length} / ${maxParZone[zoneId] === Infinity ? "∞" : maxParZone[zoneId]})`;
-    counter.style.color = (list.length >= maxParZone[zoneId] && maxParZone[zoneId] !== Infinity) ? "#ff4444" : "#aaa";
+    if (!counter) { counter = document.createElement("div"); counter.className = "zone-counter"; zone.insertBefore(counter, body); }
+    counter.textContent = `(${list.length} / ${maxPerZone[zoneId] === Infinity ? "∞" : maxPerZone[zoneId]})`;
+    counter.style.color = (list.length >= maxPerZone[zoneId] && maxPerZone[zoneId] !== Infinity) ? "#ff4444" : "#aaa";
 
     list.forEach(emp => {
       const div = document.createElement("div");
@@ -189,29 +174,20 @@ function renderZones() {
         </div>
         <button onclick="unassign('${emp.name}')">x</button>
       `;
-      div.onclick = ev => {
-        if (ev.target.tagName === "BUTTON") return;
-        openEmployeeDetail(employees.findIndex(e => e.name === emp.name));
-      };
+      div.onclick = ev => { if (ev.target.tagName !== "BUTTON") openEmployeeDetail(employees.findIndex(e => e.name === emp.name)); };
       body.appendChild(div);
     });
 
-    if (list.length === 0 && isMandatoryEmpty(zoneId)) zone.classList.add("empty");
-    else zone.classList.remove("empty");
+    zone.classList.toggle("empty", list.length === 0 && isMandatoryEmpty(zoneId));
   });
 }
 
-function unassign(name) {
-  const emp = employees.find(e => e.name === name);
-  if (emp) {
-    emp.location = "unassigned";
-    renderZones();
-    renderUnassigned();
-  }
-}
+// Unassign employee
+function unassign(name) { const emp = employees.find(e => e.name === name); if (emp) { emp.location="unassigned"; renderZones(); renderUnassigned(); } }
 
+// Rules
 function checkRules(zone, role) {
-  switch(zone) {
+  switch(zone){
     case "reception": return role === "Réceptionniste" || role === "Manager";
     case "server": return role === "Technicien IT" || role === "Manager";
     case "security": return role === "Agent de sécurité" || role === "Manager";
@@ -220,49 +196,18 @@ function checkRules(zone, role) {
   }
 }
 
-function isMandatoryEmpty(zone) {
-  return ["reception","server","security","archives"].includes(zone);
-}
+function isMandatoryEmpty(zone) { return ["reception","server","security","archives"].includes(zone); }
 
-const expContainer = document.getElementById("experiences-container");
-document.getElementById("add-experience-btn").addEventListener("click", () => {
-  const div = document.createElement("div");
-  div.className = "experience-item";
-  div.innerHTML = `
-    <input type="text" placeholder="Poste occupé" class="exp-role" required />
-    <input type="text" placeholder="Entreprise" class="exp-company" required />
-    <input type="text" placeholder="Durée (ex: 2021-2023)" class="exp-duration" required />
-    <button type="button" class="remove-exp">🗑</button>
-  `;
-  expContainer.appendChild(div);
-  div.querySelector(".remove-exp").onclick = () => div.remove();
-});
-
-const photoInput = document.getElementById("photo");
-const photoPreview = document.getElementById("photo-preview");
-photoInput.addEventListener("input", () => {
-  if(photoInput.value.trim() !== "") {
-    photoPreview.src = photoInput.value;
-    photoPreview.style.display = "block";
-  } else photoPreview.style.display = "none";
-});
-
+// Employee detail modal
 const detailModal = document.createElement("div");
-detailModal.className = "modal";
-detailModal.id = "detail-modal";
-detailModal.innerHTML = `
-  <div class="modal-content">
-    <span class="close-btn" id="detail-close">×</span>
-    <div id="detail-body"></div>
-  </div>
-`;
+detailModal.className = "modal"; detailModal.id = "detail-modal";
+detailModal.innerHTML = `<div class="modal-content"><span class="close-btn" id="detail-close">×</span><div id="detail-body"></div></div>`;
 document.body.appendChild(detailModal);
 const detailBody = document.getElementById("detail-body");
 document.getElementById("detail-close").onclick = () => detailModal.style.display = "none";
 
 function openEmployeeDetail(index) {
-  const emp = employees[index];
-  if(!emp) return;
+  const emp = employees[index]; if (!emp) return;
   const expHTML = emp.experiences.map(e => `<li>${e.role} @ ${e.company} (${e.duration})</li>`).join("");
   detailBody.innerHTML = `
     <div style="text-align:center;">
@@ -278,5 +223,6 @@ function openEmployeeDetail(index) {
   detailModal.style.display = "flex";
 }
 
+// Initial render
 renderUnassigned();
 renderZones();
