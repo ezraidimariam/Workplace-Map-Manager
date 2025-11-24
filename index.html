@@ -1,149 +1,146 @@
-  <!DOCTYPE html>
-  <html lang="fr">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Employee Floor Planner</title>
-      <link rel="stylesheet" href="styles/style.css" />
-    </head>
-    <body>
-      <header class="main-title">Employee Floor Planner</header>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Floor Planner</title>
+    <link rel="stylesheet" href="styles/style.css" />
+  </head>
+  <body>
+    <header class="main-title">Employee Floor Planner</header>
 
-      <div class="container">
-       
-        <aside class="sidebar">
-          <h2>Unassigned Staff</h2>
-          <ul id="unassigned-list"></ul>
-          <button id="add-worker-btn">Add New Worker</button>
-        </aside>
+    <div class="container">
+      <aside class="sidebar">
+        <h2>Unassigned Staff</h2>
+        <ul id="unassigned-list"></ul>
+        <button id="add-worker-btn">Add New Worker</button>
+      </aside>
 
-      
-        <main class="floor-plan">
-          <div class="zone" data-zone="conference">
-            <h3>Salle de conférence</h3>
-            <button class="add-btn">+</button>
-            <div class="zone-body"></div>
-          </div>
-
-          <div class="zone" data-zone="reception">
-            <h3>Réception</h3>
-            <button class="add-btn">+</button>
-            <div class="zone-body"></div>
-          </div>
-
-          <div class="zone" data-zone="server">
-            <h3>Salle des serveurs</h3>
-            <button class="add-btn">+</button>
-            <div class="zone-body"></div>
-          </div>
-
-          <div class="zone" data-zone="security">
-            <h3>Salle de sécurité</h3>
-            <button class="add-btn">+</button>
-            <div class="zone-body"></div>
-          </div>
-
-          <div class="zone" data-zone="staff">
-            <h3>Salle du personnel</h3>
-            <button class="add-btn">+</button>
-            <div class="zone-body"></div>
-          </div>
-
-          <div class="zone" data-zone="archives">
-            <h3>Salle d'archives</h3>
-            <button class="add-btn">+</button>
-            <div class="zone-body"></div>
-          </div>
-        </main>
-      </div>
-      
-
-      <div id="add-modal" class="modal">
-        <div class="modal-content">
-          <span class="close-btn">×</span>
-          <h2>Add Worker</h2>
-          <form id="add-worker-form">
-            <label
-              >Nom complet
-              <input type="text" id="name" required />
-            </label>
-
-            <label
-              >Poste
-              <select id="role" required>
-                <option value="Réceptionniste">Réceptionniste</option>
-                <option value="Technicien IT">Technicien IT</option>
-                <option value="Agent de sécurité">Agent de sécurité</option>
-                <option value="Manager">Manager</option>
-                <option value="Nettoyage">Nettoyage</option>
-                <option value="Employé">Employé</option>
-              </select>
-            </label>
-
-            <label
-              >Lien de la photo
-              <input type="text" id="photo" />
-            </label>
-            <img
-              id="photo-preview"
-              style="
-                width: 60px;
-                height: 60px;
-                display: none;
-                border-radius: 50%;
-                margin-top: 10px;
-              "
-            />
-
-            <label
-              >Email
-              <input type="email" id="email" />
-            </label>
-
-            <label
-              >Numéro de téléphone
-              <input type="text" id="phone" />
-            </label>
-            <div class="experiences-section">
-              <label>Expériences professionnelles</label>
-
-              <div id="experiences-container">
-                <div class="experience-item">
-                  <input
-                    type="text"
-                    placeholder="Poste occupé"
-                    class="exp-role"
-                    required
-                  />
-                  <input
-                    type="text"
-                    placeholder="Entreprise"
-                    class="exp-company"
-                    required
-                  />
-                  <input
-                    type="text"
-                    placeholder="Durée (ex: 2021-2023)"
-                    class="exp-duration"
-                    required
-                  />
-                  <button type="button" class="remove-exp">🗑</button>
-                </div>
-              </div>
-
-              <button type="button" id="add-experience-btn" class="btn-add">
-                + Ajouter une expérience
-              </button>
-            </div>
-
-            <div class="modal-actions">
-              <button type="submit">Ajouter</button>
-              <button type="button" id="cancel-btn">Annuler</button>
-            </div>
-          </form>
+      <main class="floor-plan">
+        <div class="zone" data-zone="conference">
+          <h3>Salle de conférence</h3>
+          <button class="add-btn">+</button>
+          <div class="zone-body"></div>
         </div>
-      </div>
 
-      <script src="script.js"></script>
-    </body>
-  </html>
+        <div class="zone" data-zone="reception">
+          <h3>Réception</h3>
+          <button class="add-btn">+</button>
+          <div class="zone-body"></div>
+        </div>
+
+        <div class="zone" data-zone="server">
+          <h3>Salle des serveurs</h3>
+          <button class="add-btn">+</button>
+          <div class="zone-body"></div>
+        </div>
+
+        <div class="zone" data-zone="security">
+          <h3>Salle de sécurité</h3>
+          <button class="add-btn">+</button>
+          <div class="zone-body"></div>
+        </div>
+
+        <div class="zone" data-zone="staff">
+          <h3>Salle du personnel</h3>
+          <button class="add-btn">+</button>
+          <div class="zone-body"></div>
+        </div>
+
+        <div class="zone" data-zone="archives">
+          <h3>Salle d'archives</h3>
+          <button class="add-btn">+</button>
+          <div class="zone-body"></div>
+        </div>
+      </main>
+    </div>
+
+    <div id="add-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">×</span>
+        <h2>Add Worker</h2>
+        <form id="add-worker-form">
+          <label
+            >Nom complet
+            <input type="text" id="name" required />
+          </label>
+
+          <label
+            >Poste
+            <select id="role" required>
+              <option value="Réceptionniste">Réceptionniste</option>
+              <option value="Technicien IT">Technicien IT</option>
+              <option value="Agent de sécurité">Agent de sécurité</option>
+              <option value="Manager">Manager</option>
+              <option value="Nettoyage">Nettoyage</option>
+              <option value="Employé">Employé</option>
+            </select>
+          </label>
+
+          <label
+            >Lien de la photo
+            <input type="text" id="photo" />
+          </label>
+          <img
+            id="photo-preview"
+            style="
+              width: 60px;
+              height: 60px;
+              display: none;
+              border-radius: 50%;
+              margin-top: 10px;
+            "
+          />
+
+          <label
+            >Email
+            <input type="email" id="email" />
+          </label>
+
+          <label
+            >Numéro de téléphone
+            <input type="text" id="phone" />
+          </label>
+          <div class="experiences-section">
+            <label>Expériences professionnelles</label>
+
+            <div id="experiences-container">
+              <div class="experience-item">
+                <input
+                  type="text"
+                  placeholder="Poste occupé"
+                  class="exp-role"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Entreprise"
+                  class="exp-company"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Durée (ex: 2021-2023)"
+                  class="exp-duration"
+                  required
+                />
+                <button type="button" class="remove-exp">🗑</button>
+              </div>
+            </div>
+
+            <button type="button" id="add-experience-btn" class="btn-add">
+              + Ajouter une expérience
+            </button>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit">Ajouter</button>
+            <button type="button" id="cancel-btn">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
