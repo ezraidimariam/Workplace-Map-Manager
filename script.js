@@ -1,6 +1,6 @@
 let employees = [];
 
-const maxPerZone = {
+const maxParZone = {
   reception: 1,
   server: 2,
   security: 2,
@@ -20,25 +20,57 @@ closeBtn.onclick = () => (modal.style.display = "none");
 document.getElementById("cancel-btn").onclick = () => {
   modal.style.display = "none";
   form.reset();
+  document.getElementById("experiences-container").innerHTML = "";
 };
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const photo = document.getElementById("photo").value.trim();
+  const role = document.getElementById("role").value;
+
+  const nameRegex = /^[A-Za-z\s]+$/;
+  if (!nameRegex.test(name)) {
+    alert("Le nom ne peut contenir que des lettres et des espaces !");
+    return;
+  }
+
+  const phoneRegex = /^\d+$/;
+  if (phone && !phoneRegex.test(phone)) {
+    alert("Le numéro de téléphone ne peut contenir que des chiffres !");
+    return;
+  }
+
+  if (photo) {
+    const urlRegex = /^(https?:\/\/)?([\w\-]+(\.[\w\-]+)+)(\/[\w\-.,@?^=%&:\/~+#]*)?$/;
+    if (!urlRegex.test(photo)) {
+      alert("Veuillez entrer une URL valide pour la photo !");
+      return;
+    }
+  }
+
+  if (role === "") {
+    alert("Veuillez choisir un rôle !");
+    return;
+  }
+
   const worker = {
-    name: document.getElementById("name").value,
-    role: document.getElementById("role").value,
-    photo: document.getElementById("photo").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
+    name: name,
+    role: role,
+    photo: photo,
+    email: document.getElementById("email").value.trim(),
+    phone: phone,
     experiences: [],
     location: "unassigned"
   };
 
   document.querySelectorAll(".experience-item").forEach(exp => {
     worker.experiences.push({
-      role: exp.querySelector(".exp-role").value,
-      company: exp.querySelector(".exp-company").value,
-      duration: exp.querySelector(".exp-duration").value
+      role: exp.querySelector(".exp-role").value.trim(),
+      company: exp.querySelector(".exp-company").value.trim(),
+      duration: exp.querySelector(".exp-duration").value.trim()
     });
   });
 
@@ -83,10 +115,10 @@ zones.forEach(zone => {
 
 function openAssignForm(zoneId, zone) {
   const currentCount = employees.filter(e => e.location === zoneId).length;
-  const maxCount = maxPerZone[zoneId];
+  const maxCount = maxParZone[zoneId];
   
   if (currentCount >= maxCount) {
-    alert("Cannot add more employees to this zone!");
+    alert("Impossible d'ajouter plus d'employés dans cette zone !");
     return;
   }
 
@@ -104,8 +136,8 @@ function openAssignForm(zoneId, zone) {
     <select class="assign-select">
       ${eligible.map((e,i) => `<option value="${i}">${e.name} - ${e.role}</option>`).join('')}
     </select>
-    <button class="assign-btn">Add</button>
-    <button class="assign-cancel">Cancel</button>
+    <button class="assign-btn">Ajouter</button>
+    <button class="assign-cancel">Annuler</button>
   `;
 
   formDiv.querySelector(".assign-cancel").onclick = () => formDiv.remove();
@@ -115,7 +147,7 @@ function openAssignForm(zoneId, zone) {
 
     const countNow = employees.filter(e => e.location === zoneId).length;
     if (countNow >= maxCount) {
-      alert("Cannot add more employees to this zone!");
+      alert("Impossible d'ajouter plus d'employés dans cette zone !");
       formDiv.remove();
       return;
     }
@@ -144,8 +176,8 @@ function renderZones() {
       counter.style.marginBottom = "8px";
       zone.insertBefore(counter, body);
     }
-    counter.textContent = `(${list.length} / ${maxPerZone[zoneId] === Infinity ? "∞" : maxPerZone[zoneId]})`;
-    counter.style.color = (list.length >= maxPerZone[zoneId] && maxPerZone[zoneId] !== Infinity) ? "#ff4444" : "#aaa";
+    counter.textContent = `(${list.length} / ${maxParZone[zoneId] === Infinity ? "∞" : maxParZone[zoneId]})`;
+    counter.style.color = (list.length >= maxParZone[zoneId] && maxParZone[zoneId] !== Infinity) ? "#ff4444" : "#aaa";
 
     list.forEach(emp => {
       const div = document.createElement("div");
