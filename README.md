@@ -1,6 +1,5 @@
-📌 Employee Floor Planner — Work-Map-Manager
-
-Employee Floor Planner est une application web interactive permettant de gérer et organiser les employés sur un plan d’étage.
+🔷WorkSphere – Virtual workplace
+WorkSphere – Virtual workplace est une application web interactive permettant de gérer et organiser les employés sur un plan d’étage.
 Elle offre une interface fluide, claire et responsive, avec des règles d'accès strictes pour garantir une organisation professionnelle et cohérente.
 
 ___ Fonctionnalités principales
